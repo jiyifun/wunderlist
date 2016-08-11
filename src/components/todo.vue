@@ -21,26 +21,15 @@
 </template>
 
 <script>
+import Store from '../lib/store';
+console.log(Store);
 export default {
   data () {
     return {
       newTask: '', //新任务占位
       visibility: false, //过滤
       isFinishedShow: false,
-      items:[
-        {
-          msg: 'first',
-          isFinished: false
-        },
-        {
-          msg: 'second',
-          isFinished: false
-        },
-        {
-          msg: 'third',
-          isFinished: false
-        }
-      ]
+      items: Store.fetch()
     }
   },
   computed: {
@@ -58,6 +47,15 @@ export default {
       return this.finishedTask.length > 0;
     }
   },
+  watch: {
+    'items': {
+      handler: function(val, oldval) {
+        Store.save(val);
+        console.log('items changes');
+      },
+      deep: true
+    }
+  },
   methods: {
     toggleItem: function(item) {
       item.isFinished = !item.isFinished;
@@ -66,21 +64,26 @@ export default {
       this.isFinishedShow = !this.isFinishedShow;
     },
     addTask: function(){
-      this.items.push({msg:this.newTask,isFinished:false});
+      if (this.newTask.trim() == "") {
+        this.newTask = '';
+        return;
+      };
+      this.items.push({msg:this.newTask.trim(),isFinished:false});
       console.log('add item ' + this.newTask);
       this.newTask = '';
     },
     removeTask: function(item){
       console.log('remove ' + item.msg);
-      var i,
-          arr = this.items,
-          len = arr.length;
-      for (i = 0; i < len; i++) {
-        if (arr[i] == item) {
-          arr.splice(i,1);
-          console.log('remove complited');
-        };
-      }
+      this.items.$remove(item);
+      // var i,
+      //     arr = this.items,
+      //     len = arr.length;
+      // for (i = 0; i < len; i++) {
+      //   if (arr[i] == item) {
+      //     arr.splice(i,1);
+      //     console.log('remove complited');
+      //   };
+      // }
     }
   }
 }
@@ -92,7 +95,7 @@ export default {
 /* 必需 */
 .expand-transition {
   transition: all .3s ease;
-  height: 40px;
+  height: 3rem;
   overflow: hidden;
 }
 
@@ -126,16 +129,16 @@ li,ul {
   margin-left: 5px;
   margin-top: -2px;
   color: #fff;
-  font-size: 28px;  
-  line-height: 30px;
+  font-size: 2rem;  
+  line-height: 2rem;
 }
 .add-item input {
   width: 100%;
   border: 0;
   outline: none;
-  padding: 0 0 0 30px;
+  padding: 0 0 0 2rem;
   border: none;
-  line-height: 30px;
+  line-height: 2rem;
   background-color: transparent;
   color: #fff;
 }
@@ -148,7 +151,7 @@ li,ul {
   margin:  1px 0;
   background-color: #fff;
   border-radius: 3px;
-  line-height: 40px;
+  line-height: 3rem;
   vertical-align: middle;
 }
 
@@ -168,5 +171,20 @@ h1 {
   border: none;
   border-radius: 3px;
   outline: none;
+}
+::-webkit-input-placeholder {
+   color: #fff;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   color: #fff;  
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   color: #fff;  
+}
+
+:-ms-input-placeholder {  
+   color: #fff;  
 }
 </style>

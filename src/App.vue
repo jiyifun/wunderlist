@@ -4,17 +4,17 @@
     <header class="wunder-header">
       <h1 class="wunder-header-title">今天</h1>
     </header>
-    <hello></hello>
+    <todo></todo>
     
   </div>
 </template>
 
 <script>
-import Hello from './components/Hello'
+import todo from './components/todo'
 
 export default {
   components: {
-    Hello
+    todo
   }
 }
 </script>
